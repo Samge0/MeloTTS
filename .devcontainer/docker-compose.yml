@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  melotts:
+    # image: samge/melotts-dev
+    build: 
+      context: ..
+      dockerfile: .devcontainer/Dockerfile-dev
+      args:
+        PROXY: http://192.168.50.48:7890
+    volumes:
+      - F:/Space/PRO/ai/MeloTTS:/app    
+      - F:/.cache:/root/.cache    
+    command: sleep infinity
+    restart: unless-stopped
+    environment:
+      NVIDIA_VISIBLE_DEVICES: 1
+      # NVIDIA_VISIBLE_DEVICES: all
+      XXXX_DEMO: XXXX_DEMO
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    # network_mode: host
+    shm_size: 22g
+    ports:
+      # 因为使用的是host模式，这里映射端口需要修改
+      - "0.0.0.0:18188:8000"
+      - "0.0.0.0:17860:7860"

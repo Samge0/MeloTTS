@@ -1,0 +1,25 @@
+# set base mirror
+FROM samge/ai-env:cuda11.8.0-cudnn8-devel-ubuntu22.04-python3.9.18-torch2.2.0 as base
+
+ARG PROXY
+ENV http_proxy=${PROXY} https_proxy=${PROXY}
+
+RUN apt-get update && apt-get install -y \
+    build-essential libsndfile1 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+FROM base as requirements
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+FROM requirements as download
+WORKDIR /app
+COPY . /app
+RUN python -m unidic download
+RUN export PYTHONPATH=/app && python melo/init_downloads.py
+
+
+# 重置代理配置
+ENV http_proxy= https_proxy=

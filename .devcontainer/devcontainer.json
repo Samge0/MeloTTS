@@ -1,0 +1,12 @@
+{
+	"name": "melotts",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "melotts",
+    "workspaceFolder": "/app",
+    "extensions": [
+        "ms-python.python",
+        "ms-python.debugpy",
+        "humao.rest-client",
+        "samge.vscode-samge-translate"
+    ]
+}

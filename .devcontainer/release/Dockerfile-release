@@ -1,0 +1,31 @@
+# 使用基础镜像
+FROM samge/melotts-dev-base
+
+# 设置工作目录
+WORKDIR /app
+
+# 将项目的文件复制到工作目录中
+COPY . .
+
+# 设置代理环境变量
+ARG PROXY
+ENV http_proxy=${PROXY} https_proxy=${PROXY}
+
+# set PYTHONPATH
+RUN echo "export PYTHONPATH=/app" >> ~/.bashrc
+ENV PYTHONPATH=/app
+
+# declare the port on which the container listens
+EXPOSE 7860
+EXPOSE 8000
+
+VOLUME [ "/root/.cache" ]
+
+# 安装依赖，变动小的放前面
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 重置代理配置
+ENV http_proxy= https_proxy=
+
+CMD ["python", "melo/app.py", "--host", "0.0.0.0", "--port", "7860"]
